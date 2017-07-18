@@ -4,11 +4,18 @@ include:
 
 app-pkgs:
   pkg.installed:
-    - names:
+    - pkgs:
       - git
-      - python-virtualenv
+{% if grains['os_family'] == 'Debian' %}
       - python-dev
-      - libmysqlclient-dev
+      - sqlite3
+      - libsqlite3-dev
+{% elif grains['os_family'] == 'RedHat' %}
+      - python-devel
+      - sqlite
+      - sqlite-devel
+{% endif %}
+      - python-virtualenv
 
 webapp:
   git.latest:
@@ -24,7 +31,7 @@ webapp:
 
 settings:
   file.managed:
-    - name: /var/www/myapp/settings.py
+    - name: /var/www/myapp/toydjangosite/settings.py
     - source: salt://webserver/settings.py
     - template: jinja
     - watch:
@@ -33,15 +40,25 @@ settings:
 /var/www/env:
   virtualenv.manage:
     - requirements: /var/www/myapp/requirements.txt
-    - no_site_packages: true
-    - clear: false
+    - system_site_packages: False
+    - clear: False
     - require:
       - pkg: app-pkgs
       - file: settings
+    - require_in:
+      - service: start_circus
 
 nginx:
   pkg:
     - latest
+{% if grains['os_family'] == 'RedHat' %}
+  file:
+    - managed
+    - name: /etc/nginx/nginx.conf
+    - source: salt://webserver/nginx-redhat.conf
+    - template: jinja
+    - mode: 644
+{% endif %}
   service:
     - running
     - watch:
@@ -61,4 +78,4 @@ gunicorn_circus:
         - source: salt://webserver/gunicorn.ini
         - makedirs: True
         - watch_in:
-            - service: circusd
+            - service: start_circus

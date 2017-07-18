@@ -1,24 +1,30 @@
-circus:
-  pip.installed:
-    - name: circus
+{% from "circus/map.jinja" import circus with context %}
 
-circus_upstart:
+include:
+  - essential
+
+install_circus:
+  pip.installed:
+    - name: {{ circus.pkg }}
+
+circus_systemd:
   file.managed:
-    - name: /etc/init/circusd.conf
-    - source: salt://circus/circusd.conf
+    - name: {{ circus.systemdtarget }}
+    - source: {{ circus.systemdsource }}
+    - makedirs: True
 
 circus_conf:
   file.managed:
-    - name: /etc/circus.ini
-    - source: salt://circus/circus.ini
+    - name: {{ circus.configtarget }}
+    - source: {{ circus.configsource }}
 
 circus_dir:
   file.directory:
-    - name: /etc/circus.d
+    - name: {{ circus.circusdir }}
 
-circusd:
-  service:
-    - running
+start_circus:
+  service.running:
+    - name: {{ circus.service }}
     - require:
-      - file: circus_upstart
+      - file: circus_systemd
       - file: circus_dir
