@@ -6,7 +6,7 @@ A salt state tree for deploying a django app to a production server.
 ## The Stack
 
 
-* __Ubuntu 12.04 64bit __: The package names and the rest of the stack are only known to work with Ubuntu 12.04
+* __Ubuntu 16.04 / Ubuntu 17.04 / CentOS 7__
 * __NGINX__: As a reverse proxy for the wsgi container and to serve static content
 * __gunicorn__: As our wsgi container
 * __circus__: Process watcher for gunicorn
