@@ -22,7 +22,7 @@ webapp:
     - name: {{ pillar['git_repo'] }}
     - rev: {{ pillar['git_rev'] }}
     - target: /var/www/myapp/
-    - force: true
+    - force_clone: true
     - require:
       - pkg: app-pkgs
       - file: deploykey

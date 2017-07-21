@@ -1,9 +1,0 @@
-debug: True
-dbengine: django.db.backends.sqlite3
-dbname: db.sqlite3
-#dbuser: mydbuser
-#dbpassword: myterribledbpassword
-#dbhost: localhost
-#dbport: 3306
-git_rev: master
-git_repo: git@github.com:821760408-sp/toy-django-project.git

@@ -23,3 +23,7 @@ pip-log.txt
 # SublimeText
 *.sublime-project
 *.sublime-workspace
+
+pillar/settings.sls
+id_rsa*
+
